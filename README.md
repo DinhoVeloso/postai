@@ -24,3 +24,25 @@ npm install
 npm run dev
 ```
 A câmera do app só abre em https (ou localhost); no celular pela rede local use o botão de galeria/câmera do sistema.
+
+## Conectar Instagram e TikTok
+Na primeira abertura, o app mostra uma tela de boas-vindas. Nela dá para conectar as redes ou pular. Depois, as contas ficam em **Estilos → Contas conectadas**. As chaves de acesso ficam num cookie criptografado (`POSTAI_SECRET`), separado em cada aparelho.
+
+**Instagram** ([developers.facebook.com](https://developers.facebook.com/apps)):
+1. Crie um app do tipo **Empresa** e adicione o produto **Instagram → API com login do Instagram**.
+2. Em *Configurar login da empresa*, cadastre a URL de redirecionamento `https://postai-alpha.vercel.app/api/social/instagram/callback`.
+3. Política de privacidade: `https://postai-alpha.vercel.app/privacidade`. Exclusão de dados: `https://postai-alpha.vercel.app/privacidade#exclusao`.
+4. Em *Funções do app → Testadores do Instagram*, adicione sua conta e aceite o convite no Instagram (Configurações → Apps e sites).
+5. Copie o **ID do app do Instagram** e a **chave secreta** para a Vercel: `INSTAGRAM_APP_ID` e `INSTAGRAM_APP_SECRET`.
+
+Em modo de desenvolvimento, só as contas cadastradas como testadoras conseguem conectar. Isso basta para o seu uso e para alguns clientes. Para abrir a qualquer pessoa, o app precisa passar pela revisão da Meta.
+
+**TikTok** ([developers.tiktok.com](https://developers.tiktok.com/apps)):
+1. Crie um app e adicione os produtos **Login Kit** e **Content Posting API**, com os escopos `user.info.basic`, `video.upload` e `video.publish`.
+2. Cadastre o redirect URI `https://postai-alpha.vercel.app/api/social/tiktok/callback`. Termos: `https://postai-alpha.vercel.app/privacidade#termos`. Privacidade: `https://postai-alpha.vercel.app/privacidade`.
+3. Use o **Sandbox** e adicione sua conta como usuária de teste.
+4. Copie o **Client key** e o **Client secret** para a Vercel: `TIKTOK_CLIENT_KEY` e `TIKTOK_CLIENT_SECRET`.
+
+Até passar pela auditoria do TikTok, os posts feitos pela API saem como privados.
+
+Depois de cadastrar as variáveis, faça um novo deploy.

@@ -10,6 +10,7 @@ import { describeSlot, nextSlots, tipFor } from "@/lib/times";
 import type { Media, Network, ObjectiveId, Post, PostFormat } from "@/lib/types";
 import { Chips, Sheet, fmtDateTime, usePref, useStore } from "./ui";
 import { FORMATS, defaultFormat } from "./editor";
+import { NET_LABEL, useSocial } from "./social";
 import type { Nav } from "./app";
 
 export type PostDraft = { mediaIds: string[]; caption?: string; hashtags?: string[]; objective?: ObjectiveId; network?: Network; format?: PostFormat };
@@ -23,6 +24,7 @@ export function PostEditor({ postId, draft, back, go }: { postId?: string; draft
   const [brand] = usePref<string>("brand", "");
   const [defObjective] = usePref<ObjectiveId>("objective", "venda");
   const [defNetwork] = usePref<Network>("network", "instagram");
+  const social = useSocial();
   const [post, setPost] = useState<Post | null>(null);
   const [picker, setPicker] = useState(false);
   const [status, setStatus] = useState("");
@@ -124,6 +126,9 @@ export function PostEditor({ postId, draft, back, go }: { postId?: string; draft
 
         <div className="flex flex-wrap items-center gap-2">
           <Chips<Network> value={post.network} onChange={(network) => set({ network, format: items[0] ? defaultFormat(network, items[0]) : FORMATS[network][0].id })} options={[{ id: "instagram", label: "Instagram" }, { id: "tiktok", label: "TikTok" }]} />
+          {social.status && (social.status[post.network].account
+            ? <span className="text-xs text-ok">conta {social.status[post.network].account!.name} conectada</span>
+            : <span className="text-xs text-muted">{NET_LABEL[post.network]} não conectado (conecte em Estilos)</span>)}
         </div>
         <Chips<PostFormat> value={post.format} onChange={(format) => set({ format })} options={FORMATS[post.network]} />
         <div>

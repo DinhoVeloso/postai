@@ -6,6 +6,7 @@ import { FONT_LABEL } from "@/lib/fonts";
 import { BUILTIN_STYLES } from "@/lib/styles";
 import type { Aspect, FontId, Style, TextBg } from "@/lib/types";
 import { Chips, Sheet, Swatches, usePref, useStore } from "./ui";
+import { AccountCards, useSocial } from "./social";
 
 const BASE = BUILTIN_STYLES[3];
 
@@ -15,10 +16,16 @@ export function StylesView() {
   const [styleId, setStyleId] = usePref<string>("style", "");
   const [editing, setEditing] = useState<Style | null>(null);
   const [open, setOpen] = useState<string | null>(null);
+  const social = useSocial();
 
   return (
     <div className="safe-t space-y-4 p-4 md:p-6">
       <h1 className="text-xl font-bold">Estilos</h1>
+
+      <section className="space-y-2">
+        <h2 className="text-sm font-semibold">Contas conectadas</h2>
+        <AccountCards {...social} />
+      </section>
 
       <section className="card space-y-2 p-3">
         <h2 className="text-sm font-semibold">Sobre você / sua marca</h2>

@@ -1,6 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Calendar, Camera, Download, Images, Palette } from "lucide-react";
+import { Calendar, Camera, Download, Images, Palette, X } from "lucide-react";
+import type { Network } from "@/lib/types";
+import { Onboarding } from "./onboarding";
+import { NET_LABEL, socialErrorText } from "./social";
 import { Library } from "./library";
 import { CameraView } from "./camera";
 import { Editor } from "./editor";
@@ -38,8 +41,16 @@ export function App() {
 
   const full = view.name === "camera" || view.name === "editor" || view.name === "post";
   const install = useInstall();
+  const { intro, notice, finishIntro, clearNotice } = useIntro();
   return (
     <div className="flex h-full flex-col md:flex-row">
+      {intro && <Onboarding startAtAccounts={intro === "accounts"} notice={notice} onDone={finishIntro} />}
+      {!intro && notice && (
+        <div className="fixed inset-x-3 top-3 z-50 mx-auto flex max-w-md items-start gap-2 rounded-xl border border-line bg-panel p-3 text-sm shadow-lg md:top-4">
+          <p className="flex-1">{notice}</p>
+          <button className="text-muted" onClick={clearNotice} aria-label="Fechar"><X size={16} /></button>
+        </div>
+      )}
       {/* PC: menu lateral */}
       <nav className="hidden w-56 shrink-0 flex-col gap-1 border-r border-line bg-panel p-3 md:flex">
         <div className="mb-4 px-2 pt-2 text-2xl font-bold"><span className="bg-gradient-to-r from-accent to-accent-2 bg-clip-text text-transparent">Postai</span></div>
@@ -78,6 +89,37 @@ function Side({ icon, label, on, onClick }: { icon: React.ReactNode; label: stri
       <span className={on ? "text-accent" : ""}>{icon}</span>{label}
     </button>
   );
+}
+
+/**
+ * Boas-vindas na primeira abertura e avisos da volta do login das redes
+ * (?connected=rede ou ?social_error=rede:motivo).
+ */
+function useIntro() {
+  const [intro, setIntro] = useState<false | "welcome" | "accounts">(false);
+  const [notice, setNotice] = useState("");
+  useEffect(() => {
+    const q = new URLSearchParams(location.search);
+    const connected = q.get("connected"), err = q.get("social_error");
+    if (connected || err) history.replaceState(null, "", location.pathname);
+    let seen = false;
+    try { seen = localStorage.getItem("postai:onboarded") === "1"; } catch { /* sem armazenamento */ }
+    // lido depois de montar: o HTML do servidor não conhece o localStorage nem a URL
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (err) setNotice(socialErrorText(err));
+    else if (connected) setNotice(`${NET_LABEL[connected as Network] ?? connected} conectado!`);
+    if (!seen) setIntro(connected || err ? "accounts" : "welcome");
+  }, []);
+  useEffect(() => {
+    if (!notice || intro) return;
+    const id = setTimeout(() => setNotice(""), 8000);
+    return () => clearTimeout(id);
+  }, [notice, intro]);
+  const finishIntro = () => {
+    try { localStorage.setItem("postai:onboarded", "1"); } catch { /* ignora */ }
+    setIntro(false); setNotice("");
+  };
+  return { intro, notice, finishIntro, clearNotice: () => setNotice("") };
 }
 
 type InstallEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> };
