@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0f0f14;
+  --panel: #17171f;
+  --panel-2: #20202b;
+  --line: #2c2c3a;
+  --text: #ececf1;
+  --muted: #9494a6;
+  --accent: #ec4899;
+  --accent-2: #f97316;
+  --ok: #22c55e;
+  --bad: #ef4444;
+  --warn: #f59e0b;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-panel-2: var(--panel-2);
+  --color-line: var(--line);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-ok: var(--ok);
+  --color-bad: var(--bad);
+  --color-warn: var(--warn);
+  --font-sans: var(--font-inter);
+}
+
+html, body { background: var(--bg); color: var(--text); overscroll-behavior: none; }
+body { font-family: var(--font-inter), system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+
+@layer components {
+  .inp { @apply h-9 w-full rounded-lg border border-line bg-panel-2 px-2.5 text-sm text-text outline-none focus:border-accent; }
+  textarea.inp { @apply h-auto py-2; }
+  .btn { @apply inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-line bg-panel-2 px-3 text-sm text-text active:scale-[0.98] disabled:opacity-50; }
+  .btn-primary { @apply border-transparent bg-gradient-to-r from-accent to-accent-2 font-semibold text-white; }
+  .chip { @apply inline-flex h-8 shrink-0 items-center gap-1 rounded-full border border-line bg-panel-2 px-3 text-xs text-text; }
+  .chip-on { @apply border-accent bg-accent/20 text-white; }
+  .lbl { @apply mb-1 block text-xs text-muted; }
+  .card { @apply rounded-xl border border-line bg-panel; }
+  .safe-b { padding-bottom: max(env(safe-area-inset-bottom), 0.5rem); }
+  .safe-t { padding-top: env(safe-area-inset-top); }
+}
