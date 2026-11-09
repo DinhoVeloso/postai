@@ -108,18 +108,18 @@ export function PostEditor({ postId, draft, back, go }: { postId?: string; draft
         <button className="btn btn-primary ml-auto" onClick={async () => { await save(); flash("Post salvo na agenda."); }}>Salvar</button>
       </header>
 
-      <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-3 pb-10">
+      <div className="mx-auto min-h-0 w-full max-w-3xl flex-1 space-y-4 overflow-y-auto p-3 pb-10 md:p-6">
         {/* mídias */}
         <div className="flex gap-2 overflow-x-auto">
           {items.map((m, i) => (
-            <div key={m.id} className="relative h-28 w-24 shrink-0 overflow-hidden rounded-lg bg-panel">
+            <div key={m.id} className="relative h-28 w-24 shrink-0 overflow-hidden rounded-lg bg-panel md:h-44 md:w-36">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={m.thumb} alt="" className="h-full w-full object-cover" onClick={() => go({ name: "editor", mediaId: m.id })} />
               <span className="absolute left-1 top-1 rounded bg-black/60 px-1 text-[10px]">{i + 1}</span>
               <button className="absolute right-1 top-1 rounded-full bg-black/60 p-0.5" onClick={() => set({ mediaIds: post.mediaIds.filter((x) => x !== m.id) })} aria-label="Tirar"><X size={12} /></button>
             </div>
           ))}
-          <button className="flex h-28 w-24 shrink-0 flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-line text-xs text-muted" onClick={() => setPicker(true)}><Plus size={18} />mídia</button>
+          <button className="flex h-28 w-24 shrink-0 md:h-44 md:w-36 flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-line text-xs text-muted" onClick={() => setPicker(true)}><Plus size={18} />mídia</button>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -165,7 +165,7 @@ export function PostEditor({ postId, draft, back, go }: { postId?: string; draft
       {msg && <div className="safe-b fixed inset-x-4 bottom-4 z-50 rounded-lg bg-panel-2 p-3 text-center text-sm shadow-lg">{msg}</div>}
       {picker && (
         <Sheet title="Escolher mídias" onClose={() => setPicker(false)}>
-          <div className="grid grid-cols-3 gap-1">
+          <div className="grid grid-cols-3 gap-1 md:grid-cols-5">
             {(media ?? []).sort((a, b) => b.created - a.created).map((m) => {
               const on = post.mediaIds.includes(m.id);
               return (

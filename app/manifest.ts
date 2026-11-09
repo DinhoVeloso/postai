@@ -7,7 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Fotografe, edite com IA e planeje seus posts do Instagram e TikTok.",
     start_url: "/",
     display: "standalone",
-    orientation: "portrait",
+    orientation: "any",
     background_color: "#0f0f14",
     theme_color: "#0f0f14",
     lang: "pt-BR",

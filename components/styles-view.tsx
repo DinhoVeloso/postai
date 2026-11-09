@@ -17,7 +17,7 @@ export function StylesView() {
   const [open, setOpen] = useState<string | null>(null);
 
   return (
-    <div className="safe-t space-y-4 p-4">
+    <div className="safe-t space-y-4 p-4 md:p-6">
       <h1 className="text-xl font-bold">Estilos</h1>
 
       <section className="card space-y-2 p-3">
@@ -32,12 +32,16 @@ export function StylesView() {
           <button className="btn btn-primary ml-auto" onClick={() => setEditing({ ...structuredClone(BASE), id: uid(), name: "", description: "", inspiration: "", custom: true })}><Plus size={16} /> Criar estilo</button>
         </div>
         {custom && !custom.length && <p className="text-xs text-muted">Crie um estilo inspirado num criador, numa marca ou numa estética. A IA descreve o jeito de editar e escrever, e você ajusta.</p>}
+        <div className="grid gap-2 md:grid-cols-2 md:items-start">
         {(custom ?? []).map((s) => <StyleRow key={s.id} s={s} active={s.id === styleId} open={open === s.id} onOpen={() => setOpen(open === s.id ? null : s.id)} onUse={() => setStyleId(s.id)} onEdit={() => setEditing(structuredClone(s))} />)}
+        </div>
       </section>
 
       <section className="space-y-2">
         <h2 className="text-sm font-semibold">Estilos prontos</h2>
+        <div className="grid gap-2 md:grid-cols-2 md:items-start">
         {BUILTIN_STYLES.map((s) => <StyleRow key={s.id} s={s} active={s.id === styleId} open={open === s.id} onOpen={() => setOpen(open === s.id ? null : s.id)} onUse={() => setStyleId(s.id)} />)}
+        </div>
       </section>
 
       {editing && <StyleForm initial={editing} onClose={() => setEditing(null)} onSaved={(s) => { setStyleId(s.id); setEditing(null); }} />}

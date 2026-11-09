@@ -36,6 +36,8 @@ export function CameraView({ go, back }: { go: Nav; back: () => void }) {
     }
   }, [facing, mode]);
 
+  // abre a câmera ao entrar e ao trocar frente/trás ou foto/vídeo
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { start(); return () => stream.current?.getTracks().forEach((t) => t.stop()); }, [start]);
 
   useEffect(() => {

@@ -23,6 +23,8 @@ export function useStore<N extends keyof Stores>(name: N) {
 export function usePref<T>(key: string, initial: T) {
   const [v, setV] = useState<T>(initial);
   useEffect(() => {
+    // lido depois de montar: o HTML do servidor não conhece o localStorage
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     try { const s = localStorage.getItem(`postai:${key}`); if (s) setV(JSON.parse(s)); } catch { /* sem armazenamento */ }
   }, [key]);
   const set = (nv: T) => { setV(nv); try { localStorage.setItem(`postai:${key}`, JSON.stringify(nv)); } catch { /* ignora */ } };

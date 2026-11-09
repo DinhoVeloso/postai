@@ -41,13 +41,14 @@ export function Agenda({ go }: { go: Nav }) {
   );
 
   return (
-    <div className="safe-t space-y-4 p-4">
+    <div className="safe-t space-y-4 p-4 md:p-6">
       <header className="flex items-center">
         <h1 className="text-xl font-bold">Agenda</h1>
         <button className="btn btn-primary ml-auto" onClick={() => go({ name: "post" })}><CalendarPlus size={16} /> Novo post</button>
       </header>
 
-      <section className="card space-y-3 p-3">
+      <div className="space-y-4 md:grid md:grid-cols-[340px_1fr] md:items-start md:gap-6 md:space-y-0">
+      <section className="card space-y-3 p-3 md:sticky md:top-4">
         <h2 className="flex items-center gap-1.5 text-sm font-semibold"><Lightbulb size={16} className="text-warn" /> Melhores horários</h2>
         <select className="inp" value={objective} onChange={(e) => setObjective(e.target.value as ObjectiveId)}>
           {OBJECTIVES.map((o) => <option key={o.id} value={o.id}>{o.emoji} {o.label}</option>)}
@@ -60,11 +61,14 @@ export function Agenda({ go }: { go: Nav }) {
         <p className="text-[11px] text-muted">São pontos de partida com base em padrões gerais das redes no Brasil. Quando a conta estiver conectada, as dicas passam a usar o desempenho dos seus próprios posts.</p>
       </section>
 
+      <div className="space-y-4">
       {posts && !posts.length && <Empty icon={<AlarmClock size={36} />} title="Nenhum post planejado"><p className="text-sm">Edite uma mídia e toque em “Criar post”, ou crie um post aqui.</p></Empty>}
       {groups.due.length > 0 && <section className="space-y-2"><h2 className="text-sm font-semibold text-accent">Hora de postar</h2>{groups.due.map((p) => <Row key={p.id} p={p} hot />)}</section>}
       {groups.next.length > 0 && <section className="space-y-2"><h2 className="text-sm font-semibold">Agendados</h2>{groups.next.map((p) => <Row key={p.id} p={p} />)}</section>}
       {groups.drafts.length > 0 && <section className="space-y-2"><h2 className="text-sm font-semibold text-muted">Rascunhos</h2>{groups.drafts.map((p) => <Row key={p.id} p={p} />)}</section>}
       {groups.done.length > 0 && <section className="space-y-2"><h2 className="text-sm font-semibold text-muted">Publicados</h2>{groups.done.map((p) => <Row key={p.id} p={p} />)}</section>}
+      </div>
+      </div>
     </div>
   );
 }

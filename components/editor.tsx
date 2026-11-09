@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Captions, Copy, Crop, Download, Loader2, Pause, Play, Plus, Send, Sliders, Sparkles, Trash2, Type, Undo2, Palette, Check } from "lucide-react";
 import { db } from "@/lib/db";
 import { FONT_LABEL, loadFonts } from "@/lib/fonts";
@@ -56,7 +56,7 @@ export function Editor({ mediaId, go, back }: { mediaId: string; go: Nav; back: 
   const boxes = useRef<Box[]>([]);
   const drag = useRef<{ id: string; dx: number; dy: number } | null>(null);
   const specRef = useRef(spec);
-  specRef.current = spec;
+  useLayoutEffect(() => { specRef.current = spec; });
 
   const setSpec = (f: (s: EditSpec) => EditSpec) => setSpecRaw((s) => (s ? f(s) : s));
   const commit = (next: EditSpec) => { if (spec) setUndo((u) => [...u.slice(-19), spec]); setSpecRaw(next); };
@@ -127,6 +127,14 @@ export function Editor({ mediaId, go, back }: { mediaId: string; go: Nav; back: 
     v.addEventListener("seeked", onSeeked);
     return () => { cancelAnimationFrame(raf); v.removeEventListener("seeked", onSeeked); };
   }, [playing, media, draw]);
+
+  // atalhos no PC (ignorados enquanto digita num campo)
+  const keys = useRef<(e: KeyboardEvent) => void>(() => {});
+  useEffect(() => {
+    const on = (e: KeyboardEvent) => keys.current(e);
+    window.addEventListener("keydown", on);
+    return () => window.removeEventListener("keydown", on);
+  }, []);
 
   const seek = (t: number) => { const v = video.current, s = specRef.current; if (v && s) v.currentTime = s.trim.start + t * s.speed; };
 
@@ -213,6 +221,17 @@ export function Editor({ mediaId, go, back }: { mediaId: string; go: Nav; back: 
     finally { setStatus(""); }
   };
 
+  useEffect(() => { keys.current = (e: KeyboardEvent) => {
+    const el = e.target as HTMLElement;
+    const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.isContentEditable;
+    const mod = e.ctrlKey || e.metaKey;
+    if (mod && e.key.toLowerCase() === "s") { e.preventDefault(); if (!status && media) { if (media.kind === "video") setAskQuality(true); else void save(); } return; }
+    if (typing) return;
+    if (mod && e.key.toLowerCase() === "z" && undo.length) { e.preventDefault(); setSpecRaw(undo[undo.length - 1]); setUndo((u) => u.slice(0, -1)); }
+    else if (e.key === " " && media?.kind === "video") { e.preventDefault(); setPlaying((p) => !p); }
+    else if ((e.key === "Delete" || e.key === "Backspace") && selText && spec) { e.preventDefault(); commit({ ...spec, texts: spec.texts.filter((t) => t.id !== selText) }); setSelText(null); }
+  }; });
+
   if (error && !media) return <div className="p-6 text-center"><p className="mb-4 text-bad">{error}</p><button className="btn" onClick={back}>Voltar</button></div>;
   if (!media || !spec || !size) return <div className="flex h-full items-center justify-center text-muted"><Loader2 className="animate-spin" /></div>;
 
@@ -235,18 +254,20 @@ export function Editor({ mediaId, go, back }: { mediaId: string; go: Nav; back: 
         <button className="btn btn-primary" disabled={!!status} onClick={() => (isVideo ? setAskQuality(true) : save())}><Check size={16} /> Salvar</button>
       </header>
 
+      <div className="flex min-h-0 flex-1 flex-col md:flex-row">
       {/* prévia */}
-      <div className="flex shrink-0 flex-col items-center bg-black py-2">
-        <canvas ref={canvas} width={size.w} height={size.h} className="max-h-[46vh] max-w-full touch-none" style={{ aspectRatio: `${size.w}/${size.h}` }}
+      <div className="flex shrink-0 flex-col items-center bg-black py-2 md:min-w-0 md:flex-1 md:justify-center md:py-6">
+        <canvas ref={canvas} width={size.w} height={size.h} className="max-h-[46vh] max-w-full touch-none md:max-h-[calc(100vh-150px)] md:cursor-move" style={{ aspectRatio: `${size.w}/${size.h}` }}
           onPointerDown={onDown} onPointerMove={onMove} onPointerUp={() => (drag.current = null)} onPointerCancel={() => (drag.current = null)} />
         {isVideo && (
-          <div className="mt-2 flex w-full items-center gap-2 px-3">
+          <div className="mt-2 flex w-full max-w-xl items-center gap-2 px-3">
             <button onClick={() => setPlaying((p) => !p)} aria-label={playing ? "Pausar" : "Tocar"}>{playing ? <Pause size={20} /> : <Play size={20} />}</button>
             <input type="range" className="flex-1 accent-[var(--accent)]" min={0} max={Math.max(dur, 0.1)} step={0.05} value={Math.min(time, dur)} onChange={(e) => seek(+e.target.value)} />
             <span className="text-xs tabular-nums text-muted">{fmtTime(time)} / {fmtTime(dur)}</span>
           </div>
         )}
       </div>
+      <div className="flex min-h-0 flex-1 flex-col md:w-[420px] md:flex-none md:border-l md:border-line md:bg-panel">
       {(status || error) && <p className={`flex items-center gap-2 px-3 py-1.5 text-xs ${error ? "text-bad" : "text-muted"}`}>{status && <Loader2 size={12} className="animate-spin" />}{error || status}</p>}
 
       <div className="flex shrink-0 gap-1 overflow-x-auto border-b border-line px-2 py-1.5">
@@ -354,6 +375,9 @@ export function Editor({ mediaId, go, back }: { mediaId: string; go: Nav; back: 
             )}
           </div>
         )}
+      </div>
+
+      </div>
       </div>
 
       {askQuality && (
