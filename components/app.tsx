@@ -53,7 +53,7 @@ export function App() {
       )}
       {/* PC: menu lateral */}
       <nav className="hidden w-56 shrink-0 flex-col gap-1 border-r border-line bg-panel p-3 md:flex">
-        <div className="mb-4 px-2 pt-2 text-2xl font-bold"><span className="bg-gradient-to-r from-accent to-accent-2 bg-clip-text text-transparent">Postai</span></div>
+        <div className="mb-4 px-2 pt-2 text-2xl font-bold"><span className="bg-gradient-to-r from-accent to-accent-2 bg-clip-text text-transparent">Postee</span></div>
         <Side icon={<Images size={18} />} label="Mídias" on={view.name === "library" || view.name === "editor"} onClick={() => go({ name: "library" })} />
         <Side icon={<Camera size={18} />} label="Câmera" on={view.name === "camera"} onClick={() => go({ name: "camera" })} />
         <Side icon={<Calendar size={18} />} label="Agenda" on={view.name === "agenda" || view.name === "post"} onClick={() => go({ name: "agenda" })} />

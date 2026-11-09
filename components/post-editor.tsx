@@ -79,12 +79,12 @@ export function PostEditor({ postId, draft, back, go }: { postId?: string; draft
   // Publicação manual até ligar as APIs do Instagram/TikTok: abre o compartilhar do celular com a mídia
   const share = async () => {
     await navigator.clipboard?.writeText(fullCaption).catch(() => {});
-    const files = items.map((m) => new File([m.blob], `postai-${m.id}.${extOf(m)}`, { type: m.blob.type || (m.kind === "image" ? "image/jpeg" : "video/mp4") }));
+    const files = items.map((m) => new File([m.blob], `postee-${m.id}.${extOf(m)}`, { type: m.blob.type || (m.kind === "image" ? "image/jpeg" : "video/mp4") }));
     if (files.length && navigator.canShare?.({ files })) {
       try { await navigator.share({ files, text: fullCaption }); flash("Legenda copiada: cole no app da rede."); }
       catch { /* usuário cancelou */ }
     } else {
-      items.forEach((m) => download(m.blob, `postai-${m.id}.${extOf(m)}`));
+      items.forEach((m) => download(m.blob, `postee-${m.id}.${extOf(m)}`));
       flash("Mídia baixada e legenda copiada (compartilhar não disponível neste navegador).");
     }
   };
@@ -94,9 +94,9 @@ export function PostEditor({ postId, draft, back, go }: { postId?: string; draft
     const z = (t: number) => new Date(t).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
     const esc = (s: string) => s.replace(/\\/g, "\\\\").replace(/\n/g, "\\n").replace(/[,;]/g, (c) => `\\${c}`);
     const net = post.network === "tiktok" ? "TikTok" : "Instagram";
-    const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Postai//PT", "BEGIN:VEVENT", `UID:${post.id}@postai`, `DTSTAMP:${z(Date.now())}`,
+    const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Postee//PT", "BEGIN:VEVENT", `UID:${post.id}@postee`, `DTSTAMP:${z(Date.now())}`,
       `DTSTART:${z(post.scheduledAt)}`, `DTEND:${z(post.scheduledAt + 15 * 60_000)}`, `SUMMARY:${esc(`Postar no ${net}: ${post.caption.split("\n")[0].slice(0, 60)}`)}`,
-      `DESCRIPTION:${esc(`Abra o Postai > Agenda e toque em Publicar.\n\n${fullCaption}`)}`,
+      `DESCRIPTION:${esc(`Abra o Postee > Agenda e toque em Publicar.\n\n${fullCaption}`)}`,
       "BEGIN:VALARM", "TRIGGER:-PT0M", "ACTION:DISPLAY", "DESCRIPTION:Hora de postar", "END:VALARM", "END:VEVENT", "END:VCALENDAR"].join("\r\n");
     download(new Blob([ics], { type: "text/calendar" }), `postar-${post.id}.ics`);
   };
@@ -159,7 +159,7 @@ export function PostEditor({ postId, draft, back, go }: { postId?: string; draft
         <div className="grid grid-cols-2 gap-2">
           <button className="btn btn-primary col-span-2" onClick={share} disabled={!items.length}><Share2 size={16} /> Publicar agora (compartilhar)</button>
           <button className="btn" onClick={() => navigator.clipboard.writeText(fullCaption).then(() => flash("Legenda copiada."))}><Copy size={14} /> Copiar legenda</button>
-          <button className="btn" onClick={() => items.forEach((m) => download(m.blob, `postai-${m.id}.${extOf(m)}`))} disabled={!items.length}><Download size={14} /> Baixar mídia</button>
+          <button className="btn" onClick={() => items.forEach((m) => download(m.blob, `postee-${m.id}.${extOf(m)}`))} disabled={!items.length}><Download size={14} /> Baixar mídia</button>
           <button className="btn" onClick={reminder}><BellRing size={14} /> Lembrete no celular</button>
           <button className="btn" onClick={async () => { await save({ status: "publicado" }); flash("Marcado como publicado."); }}><CheckCircle2 size={14} /> Já publiquei</button>
           {postId && <button className="btn col-span-2 text-bad" onClick={async () => { if (confirm("Apagar este post da agenda? (as mídias continuam na biblioteca)")) { await db.del("posts", post.id); back(); } }}><Trash2 size={14} /> Apagar post</button>}

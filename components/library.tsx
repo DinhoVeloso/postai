@@ -40,7 +40,7 @@ export function Library({ go }: { go: Nav }) {
       onDrop={(e) => { e.preventDefault(); setDrop(false); onFiles(e.dataTransfer.files); }}>
       {drop && <div className="pointer-events-none absolute inset-2 z-20 flex items-center justify-center rounded-2xl border-2 border-dashed border-accent bg-accent/10 text-lg font-semibold">Solte as fotos e vídeos aqui</div>}
       <header className="flex items-center gap-2 px-4 pb-2 pt-4">
-        <h1 className="bg-gradient-to-r from-accent to-accent-2 bg-clip-text text-2xl font-bold text-transparent md:hidden">Postai</h1>
+        <h1 className="bg-gradient-to-r from-accent to-accent-2 bg-clip-text text-2xl font-bold text-transparent md:hidden">Postee</h1>
         <h1 className="hidden text-xl font-bold md:block">Mídias</h1>
         <span className="hidden text-xs text-muted md:inline">arraste arquivos do computador para cá</span>
         <button className="btn btn-primary ml-auto" onClick={() => input.current?.click()}><ImagePlus size={16} /> Importar</button>
@@ -74,7 +74,7 @@ export function Library({ go }: { go: Nav }) {
           <div className="grid grid-cols-2 gap-2">
             <button className="btn btn-primary" onClick={() => { setSel(null); go({ name: "editor", mediaId: sel.id }); }}><Pencil size={16} /> Editar</button>
             <button className="btn" onClick={() => { setSel(null); go({ name: "post", draft: { mediaIds: [sel.id] } }); }}><Send size={16} /> Criar post</button>
-            <button className="btn" onClick={() => download(sel.blob, `postai-${sel.id}.${extOf(sel)}`)}><Download size={16} /> Baixar</button>
+            <button className="btn" onClick={() => download(sel.blob, `postee-${sel.id}.${extOf(sel)}`)}><Download size={16} /> Baixar</button>
             <button className="btn text-bad" onClick={async () => { if (confirm("Apagar esta mídia do aparelho?")) { await db.del("media", sel.id); setSel(null); } }}><Trash2 size={16} /> Apagar</button>
           </div>
         </Sheet>
