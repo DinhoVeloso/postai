@@ -1,4 +1,4 @@
-# Postee
+# Postai
 
 App de social media (PWA, funciona como app no celular): fotografar, editar com IA, planejar e publicar posts do Instagram e do TikTok.
 

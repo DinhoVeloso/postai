@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Postee — social media com IA",
-    short_name: "Postee",
+    name: "Postai — social media com IA",
+    short_name: "Postai",
     description: "Fotografe, edite com IA e planeje seus posts do Instagram e TikTok.",
     start_url: "/",
     display: "standalone",

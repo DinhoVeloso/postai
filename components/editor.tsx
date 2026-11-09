@@ -395,7 +395,7 @@ export function Editor({ mediaId, go, back }: { mediaId: string; go: Nav; back: 
           <img src={saved.thumb} alt="" className="mx-auto mb-3 max-h-48 rounded-lg" />
           <div className="grid gap-2">
             <button className="btn btn-primary" onClick={() => go({ name: "post", draft: { mediaIds: [saved.id], caption: ai?.caption, hashtags: ai?.hashtags, objective: objectiveId, network, format: defaultFormat(network, saved) } })}><Send size={16} /> Criar post com esta mídia</button>
-            <button className="btn" onClick={() => download(saved.blob, `postee-${saved.id}.${extOf(saved)}`)}><Download size={16} /> Baixar</button>
+            <button className="btn" onClick={() => download(saved.blob, `postai-${saved.id}.${extOf(saved)}`)}><Download size={16} /> Baixar</button>
             <button className="btn" onClick={() => setSaved(null)}>Continuar editando</button>
           </div>
         </Sheet>

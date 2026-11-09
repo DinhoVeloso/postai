@@ -3,9 +3,9 @@ import { inter } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Postee",
+  title: "Postai",
   description: "Fotografe, edite com IA e planeje seus posts do Instagram e TikTok.",
-  appleWebApp: { capable: true, title: "Postee", statusBarStyle: "black-translucent" },
+  appleWebApp: { capable: true, title: "Postai", statusBarStyle: "black-translucent" },
 };
 
 export const viewport: Viewport = { themeColor: "#0f0f14", width: "device-width", initialScale: 1, viewportFit: "cover" };

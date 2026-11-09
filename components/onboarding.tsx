@@ -22,7 +22,7 @@ export function Onboarding({ startAtAccounts, notice, onDone }: { startAtAccount
     <div className="safe-t safe-b fixed inset-0 z-40 overflow-y-auto bg-bg">
       <div className="mx-auto flex min-h-full max-w-2xl flex-col p-5 md:justify-center md:p-8">
         <div className="flex items-center">
-          <span className="bg-gradient-to-r from-accent to-accent-2 bg-clip-text text-2xl font-bold text-transparent">Postee</span>
+          <span className="bg-gradient-to-r from-accent to-accent-2 bg-clip-text text-2xl font-bold text-transparent">Postai</span>
           <button className="ml-auto flex items-center gap-1 text-sm text-muted hover:text-text" onClick={onDone}>Pular <X size={16} /></button>
         </div>
 
@@ -51,7 +51,7 @@ export function Onboarding({ startAtAccounts, notice, onDone }: { startAtAccount
             <div className="mt-5"><AccountCards {...social} /></div>
             <ul className="mt-4 space-y-1 text-xs text-muted">
               <li>• Instagram: precisa ser conta <b>profissional</b> (Criador de conteúdo ou Empresa). Dá para mudar de graça no próprio app do Instagram.</li>
-              <li>• As chaves de acesso ficam guardadas só neste aparelho, criptografadas. O Postee nunca vê sua senha.</li>
+              <li>• As chaves de acesso ficam guardadas só neste aparelho, criptografadas. O Postai nunca vê sua senha.</li>
             </ul>
             <div className="mt-auto flex flex-col gap-2 pt-8 sm:flex-row-reverse md:mt-8">
               <button className="btn btn-primary flex-1 py-3" onClick={onDone}>{anyConnected ? "Começar" : "Fazer isso depois"} <ArrowRight size={16} /></button>
